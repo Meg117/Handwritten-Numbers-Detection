@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[18]:
+# Importing libraries
 
 
 
@@ -21,7 +21,7 @@ import tensorflow as tf
 
 
 
-# In[19]:
+
 
 
 
@@ -29,13 +29,12 @@ import tensorflow as tf
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 
-# In[20]:
+
 
 
 print(x_train.shape, y_train.shape)
 
 
-# In[21]:
 
 
 
@@ -44,7 +43,6 @@ x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
 input_shape = (28, 28, 1)
 
 
-# In[34]:
 
 
 
@@ -61,7 +59,6 @@ print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
 
 
-# In[23]:
 
 
 
@@ -79,13 +76,11 @@ model.add(Dropout(0.5))
 model.add(Dense(num_classes, activation='softmax'))
 
 
-# In[24]:
 
 
 model.compile(loss=keras.losses.categorical_crossentropy,optimizer=tf.keras.optimizers.Adadelta(),metrics=['accuracy'])
 
 
-# In[25]:
 
 
 
@@ -95,7 +90,6 @@ model.save('mnist.h5')
 print("Saving the model as mnist.h5")
 
 
-# In[26]:
 
 
 score = model.evaluate(x_test, y_test, verbose=0)
@@ -103,8 +97,7 @@ print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
 
-# In[43]:
-
+# Building GUI
 
 from keras.models import load_model
 from tkinter import *
@@ -114,7 +107,6 @@ import numpy as np
 import win32gui
 
 
-# In[46]:
 
 
 model = load_model('mnist.h5')
@@ -122,31 +114,36 @@ model = load_model('mnist.h5')
 def predict_digit(img):
     #resize image to 28×28 pixels
     img = img.resize((28,28))
+    
     #convert rgb to grayscale
     img = img.convert('L')
+    
     #img = ImageOps.invert(img)
     img = np.array(img)
+    
     #reshaping to support our model input and normalizing
     img = img.reshape(1,28,28,1)
     img = img/255.0
+    
     #predicting the class
     img = 1 - img
     res = model.predict([img])[0]
     return np.argmax(res), max(res)
 
 
-# In[52]:
 
 
 class App(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self.x = self.y = 0
+        
         # Creating elements
         self.canvas = tk.Canvas(self, width=300, height=300, bg = "white", cursor="cross")
         self.label = tk.Label(self, text="Thinking..", font=("Helvetica", 48))
         self.classify_btn = tk.Button(self, text = "Recognise", command = self.classify_handwriting) 
         self.button_clear = tk.Button(self, text = "Clear", command = self.clear_all)
+        
         # Grid structure
         self.canvas.grid(row=0, column=0, pady=2, sticky=W, )
         self.label.grid(row=0, column=1,pady=2, padx=2)
